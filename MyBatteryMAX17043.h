@@ -102,7 +102,9 @@ public:
     void sendLevel()
     {
         #ifdef MY_DEBUG
-        this->sendLog(String("Send battery lvl to gtw").c_str());
+        String logMsg = F("Send battery lvl to gtw");
+        this->sendLog(logMsg.c_str());
+        delete &logMsg;
         #endif
 
         sendBatteryLevel(this->level, true);
@@ -197,7 +199,9 @@ protected:
 
             // Enter in deep sleep mode
             #ifdef MY_DEBUG
-            this->sendLog(String("Deep sleep mode!").c_str());
+            String logMsg = F("Deep sleep mode!");
+            this->sendLog(logMsg.c_str());
+            delete &logMsg;
             #endif
             sleep(digitalPinToInterrupt(this->pinInterrupt), CHANGE, 0);
             // Here: code not executed
