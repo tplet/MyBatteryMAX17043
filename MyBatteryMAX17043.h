@@ -67,12 +67,14 @@ public:
     /**
      * Receive (for MySensor)
      */
+    /*
     void receive(const MyMessage &message)
     {
         if (this->isEnable()) {
             // Nothing to do
         }
     }
+    */
 
     /**
      * Process
@@ -102,9 +104,8 @@ public:
     void sendLevel()
     {
         #ifdef MY_DEBUG
-        String logMsg = F("Send battery lvl to gtw");
-        this->sendLog(logMsg.c_str());
-        delete &logMsg;
+        this->logMsg = "Send battery lvl to gtw";
+        this->sendLog(this->logMsg.c_str());
         #endif
 
         sendBatteryLevel(this->level, true);
@@ -170,7 +171,7 @@ protected:
         // Send to gateway
         if (
             this->intervalSendForce->isOutdated() || 
-            this->intervalSend->isOutdated() && this->level != this->lastLevel
+            (this->intervalSend->isOutdated() && this->level != this->lastLevel)
         ) {
             this->sendLevel();
             this->dataSent = true;
@@ -199,9 +200,8 @@ protected:
 
             // Enter in deep sleep mode
             #ifdef MY_DEBUG
-            String logMsg = F("Deep sleep mode!");
-            this->sendLog(logMsg.c_str());
-            delete &logMsg;
+            this->logMsg = "Deep sleep mode!";
+            this->sendLog(this->logMsg.c_str());
             #endif
             sleep(digitalPinToInterrupt(this->pinInterrupt), CHANGE, 0);
             // Here: code not executed
@@ -284,6 +284,10 @@ protected:
      * Set pin value (will be set to digitalPinToInterrupt method)
      */
     unsigned int pinInterrupt = 3; // D3
+
+    #if defined(MY_DEBUG) || defined(SERIAL_DEBUG)
+    String logMsg;
+    #endif
 };
 
 #endif //COM_OSTERES_AUTOMATION_ARDUINO_COMPONENT_MYSENSOR_MYBATTERYMAX17043_H
